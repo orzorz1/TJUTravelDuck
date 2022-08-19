@@ -16,16 +16,12 @@
 
 <script>
     // @ is an alias to /src
-    import MapNew from '@/components/MapNew.vue'
-    import MapOld from '@/components/MapOld.vue'
     import Hammer from 'hammerjs'
     import { setTimeout } from 'timers'
 
     export default {
-        name: 'Home',
+        name: 'MapNew',
         components: {
-            MapNew,
-            MapOld
         },
         data() {
             return {
@@ -36,15 +32,16 @@
                 id: null,
                 mc: null,
                 timer: false,
-                translateX: -110,
+                translateX: -300,
                 translateY: 0,
-                scale: 0.5,
+                scale: 0.43,
                 firstTouch: true,
-                relateX: 0,
+                relateX: -300,
                 relateY: 0,
-                oldX: 0,
+                oldX: -300,
                 oldY: 0,
-                oldScale: 0.5
+                oldScale: 0.43,
+                first:0,
             }
         },
         mounted() {
@@ -55,9 +52,9 @@
         created(){
             setTimeout(()=>{
                 const position = {
-                    translateX: -110,
+                    translateX: -300,
                     translateY: 0,
-                    scale: 0.5
+                    scale: 0.43
                 }
                 this.selfPosition(position)
             },10)
@@ -103,13 +100,6 @@
             // 单点触发 - 利落
             onPan(ev) {
 
-                // console.log(this.firstTouch)
-                if (this.firstTouch) {
-                    this.oldX = this.relateX
-                    this.oldY = this.relateY
-                }
-                // console.log(this.oldX)
-                // console.log(this.oldY)
                 this.translateX = this.oldX + ev.deltaX
                 this.translateY = this.oldY + ev.deltaY
 
@@ -144,7 +134,7 @@
                     this.oldX = this.relateX
                     this.oldY = this.relateY
                 }
-                if(this.scale<0.5){this.scale=0.5}
+                if(this.scale<0.43){this.scale=0.43}
                 if(this.scale>2){this.scale=2}
                 this.translateX = ev.center.x - (ev.center.x - this.translateX) / this.oldScale * this.scale
                 this.translateY = ev.center.y - (ev.center.y - this.translateY) / this.oldScale * this.scale

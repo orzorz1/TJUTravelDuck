@@ -1,11 +1,37 @@
 <template>
 	<div class="home">
-		<div class="map">
-			<MapNew v-if="!campu" />
-			<MapOld v-if="campu" />
-		</div>
-		<div class="instruction"></div>
-		<div class="location" @click="getLocation1"></div>
+		<!-- 加载界面 -->
+		<transition name="fade" mode="out-in">
+			<Loading class="loading" v-if="loading" />
+		</transition>
+		<!-- 校园地图组件 -->
+		<transition name="fade" mode="out-in">
+			<div class="map" v-if="!loading">
+				<transition name="fade" mode="out-in">
+					<MapNew v-if="!campu" />
+					<MapOld v-if="campu" />
+				</transition>
+			</div>
+		</transition>
+		<!-- 文化卡片组件 -->
+		<transition name="fade" mode="out-in">
+			<Cards class="showCards" ref="showCards" v-if="!loading" />
+		</transition>
+		<!-- 说明按钮 -->
+		<transition name="fade" mode="out-in">
+			<div class="instruction" v-if="!loading"></div>
+		</transition>
+		<!-- 定位按钮 -->
+		<transition name="fade" mode="out-in">
+			<div class="location" @click="getLocation1" v-if="!loading"></div>
+		</transition>
+		<!-- 切换校区按钮 -->
+		<transition name="fade" mode="out-in">
+			<div class="exchangeCampu" @click="exchangeCampu" v-if="!loading">
+				<div class="campuButton1">{{campu==1?'卫津路':'北洋园'}}</div>
+				<div class="campuButton2">{{campu==0?'卫津路':'北洋园'}}</div>
+			</div>
+		</transition>
 	</div>
 </template>
 
@@ -13,22 +39,47 @@
 	// @ is an alias to /src
 	import MapNew from '@/components/MapNew.vue'
 	import MapOld from '@/components/MapOld.vue'
+	import Cards from '@/components/Cards.vue'
+	import Loading from '@/components/Loading.vue'
 
 	export default {
 		name: 'Home',
 		components: {
 			MapNew,
 			MapOld,
-			MapOld
+			Cards,
+			Loading
 		},
 		data() {
 			return {
 				campu: 0, //校区：0新、1老
 				longit: '', // 经度
 				latit: '',  // 纬度
+				loading: true,
 			}
 		},
+		beforeMount() {
+			this.preload()
+		},
 		methods: {
+			preload() {
+				let count = 0;
+				let imgs = [
+					//用require的方式添加图片地址，直接添加图片地址的话，在build打包之后会查找不到图片，因为打包之后的图片名称会有一个加密的字符串
+					require('../assets/map/old.png'),
+					require('../assets/map/new.png'),
+				]
+				for (let img of imgs) {
+					let image = new Image();
+					image.src = img;
+					image.onload = () => {
+						count++;
+						if (count == 2) {
+							this.loading = false
+						}
+					};
+				}
+			},
 			getLocation1() {
 				// 先定义that = this   
 				var that = this
@@ -81,12 +132,36 @@
 				})
 				that.maps = map
 			},
+			exchangeCampu(){
+				if(this.campu==0){
+					this.campu=1
+				}else{
+					this.campu=0
+				}
+			}
 		}
 	}
 </script>
 <style scoped>
+	.fade-enter-active,
+	.fade-leave-active {
+		transition: all 0.5s ease
+	}
+
+	.fade-enter,
+	.fade-leave-active {
+		opacity: 0
+	}
+
 	.home {
 		overflow: hidden;
+	}
+
+	.loading {
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+		z-index: 100;
 	}
 
 	.map {
@@ -97,6 +172,11 @@
 		height: 100vh;
 	}
 
+	.showCards {
+		z-index: 10;
+		position: absolute;
+	}
+
 	.instruction {
 		background-color: white;
 		background-image: url("../assets/icon/instruction.png");
@@ -104,8 +184,8 @@
 		border-radius: 100px;
 		display: block;
 		position: fixed;
-		height: 8vw;
-		width: 8vw;
+		height: 35px;
+		width: 35px;
 		top: 8vw;
 		right: 8vw;
 	}
@@ -121,5 +201,42 @@
 		width: 15vw;
 		bottom: 8vw;
 		left: 42.5vw;
+	}
+	.exchangeCampu{
+		position: fixed;
+		top: 25vw;
+		right: 8vw;
+		width: 35px;
+		height: 120px;
+		border-radius: 100px;
+		
+	}
+	.campuButton1{
+		position: relative;
+		background-color: white;
+		border-radius: 100px;
+		writing-mode:tb;
+		text-align: center;
+		line-height: 35px;
+		font-size: 18px;
+		z-index: 2;
+		top: 0;
+		left: 0;
+		width: 35px;
+		height: 85px;
+	}
+	.campuButton2{
+		position: relative;
+		background-color: white;
+		border-radius: 100px;
+		writing-mode:tb;
+		text-align: center;
+		line-height: 35px;
+		font-size: 18px;
+		z-index: 1;
+		top: -50px;
+		left: 0;
+		width: 35px;
+		height: 85px;
 	}
 </style>
