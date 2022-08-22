@@ -2,15 +2,15 @@
     <div ref="demo" class="demo">
         <div id="demoImg" >
             <img class="map" ref="map" src="../assets/map/old.png">
-            <img class="jiCaiFeng" src="../assets/map/old/feng.png" v-if="getedCard[0]">
-            <img class="ting" src="../assets/map/old/ting.png" v-if="getedCard[1]">
-            <img class="friendshipLake" src="../assets/map/old/friendshipLake.png"  v-if="getedCard[2]">
-            <img class="dedicationLake" src="../assets/map/old/dedicationLake.png"  v-if="getedCard[3]">
-            <img class="loveNightLake" src="../assets/map/old/loveNightLake.png" v-if="getedCard[4]">
-            <img class="youthLake" src="../assets/map/old/youthLake.png" v-if="getedCard[5]">
-            <img class="daHuo" src="../assets/map/old/daHuo.png"  v-if="getedCard[6]">
-            <img class="nine" src="../assets/map/old/nine.png"  v-if="getedCard[7]">
-            <img class="twt" src="../assets/map/old/twt.png"  v-if="getedCard[8]">
+            <img class="jiCaiFeng" src="../assets/map/old/feng.png" v-if="getedCard[0]" @click="showCard(0)">
+            <img class="ting" src="../assets/map/old/ting.png" v-if="getedCard[1]" @click="showCard(1)">
+            <img class="friendshipLake" src="../assets/map/old/friendshipLake.png"  v-if="getedCard[2]" @click="showCard(2)">
+            <img class="dedicationLake" src="../assets/map/old/dedicationLake.png"  v-if="getedCard[3]" @click="showCard(3)">
+            <img class="loveNightLake" src="../assets/map/old/loveNightLake.png" v-if="getedCard[4]" @click="showCard(4)">
+            <img class="youthLake" src="../assets/map/old/youthLake.png" v-if="getedCard[5]" @click="showCard(5)">
+            <img class="daHuo" src="../assets/map/old/daHuo.png"  v-if="getedCard[6]" @click="showCard(6)">
+            <img class="nine" src="../assets/map/old/nine.png"  v-if="getedCard[7]" @click="showCard(7)">
+            <img class="twt" src="../assets/map/old/twt.png"  v-if="getedCard[8]" @click="showCard(8)">
         </div>
     </div>
 </template>
@@ -62,6 +62,9 @@
 
         },
         methods: {
+            showCard(index){
+                alert("click:"+" "+index)
+            },
             picInit() {
                 this.id = document.getElementById('demoImg')
                 this.mc = new Hammer(this.id)
@@ -125,6 +128,7 @@
                     translateY: this.translateY,
                     scale: this.scale
                 }
+                // console.log(this.translateX+" "+this.translateY)
                 this.selfPosition(position)
                 this.firstTouch = false
             },
@@ -135,7 +139,7 @@
                     this.oldX = this.relateX
                     this.oldY = this.relateY
                 }
-                if(this.scale<0.45){this.scale=0.45}
+                if(this.scale<0.41){this.scale=0.41}
                 if(this.scale>1.5){this.scale=1.5}
                 this.translateX = ev.center.x - (ev.center.x - this.translateX) / this.oldScale * this.scale
                 this.translateY = ev.center.y - (ev.center.y - this.translateY) / this.oldScale * this.scale
@@ -194,6 +198,8 @@
     .demo {
         width: 100%;
         height: 100%;
+        /* background-color: blue; */
+    
     }
 
     .map {

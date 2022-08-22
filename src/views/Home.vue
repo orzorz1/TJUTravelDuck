@@ -75,7 +75,7 @@
 					image.onload = () => {
 						count++;
 						if (count == 2) {
-							this.loading = false
+							setTimeout(()=>{this.loading = false}, 1000+Math.random()*500)
 						}
 					};
 				}
@@ -227,14 +227,14 @@
 	}
 	.campuButton2{
 		position: relative;
-		background-color: white;
+		background-color: #E9EAE4;
 		border-radius: 100px;
 		writing-mode:tb;
 		text-align: center;
 		line-height: 35px;
 		font-size: 18px;
 		z-index: 1;
-		top: -50px;
+		top: -55px;
 		left: 0;
 		width: 35px;
 		height: 85px;

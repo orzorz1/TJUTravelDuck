@@ -2,14 +2,14 @@
     <div ref="demo" class="demo">
         <div id="demoImg" >
             <img class="map" ref="map" src="../assets/map/new.png">
-            <img class="administrationBuilding" src="../assets/map/new/1895.png" v-if="getedCard[0]">
-            <img class="colosseum" src="../assets/map/new/32.png" v-if="getedCard[1]">
-            <img class="bridge" src="../assets/map/new/bridge.png"  v-if="getedCard[2]">
-            <img class="lake" src="../assets/map/new/lake.png" v-if="getedCard[3]">
-            <img class="library" src="../assets/map/new/library.png" v-if="getedCard[4]">
-            <img class="ssqs" src="../assets/map/new/ssqs.png"  v-if="getedCard[5]">
-            <img class="datong" src="../assets/map/new/datong.png"  v-if="getedCard[6]">
-            <img class="twt" src="../assets/map/new/twt.png"  v-if="getedCard[7]">
+            <img class="administrationBuilding" src="../assets/map/new/1895.png" v-if="getedCard[0]" @click="showCard(0)">
+            <img class="colosseum" src="../assets/map/new/32.png" v-if="getedCard[1]" @click="showCard(1)">
+            <img class="bridge" src="../assets/map/new/bridge.png"  v-if="getedCard[2]" @click="showCard(2)">
+            <img class="lake" src="../assets/map/new/lake.png" v-if="getedCard[3]" @click="showCard(3)">
+            <img class="library" src="../assets/map/new/library.png" v-if="getedCard[4]" @click="showCard(4)">
+            <img class="ssqs" src="../assets/map/new/ssqs.png"  v-if="getedCard[5]" @click="showCard(5)">
+            <img class="datong" src="../assets/map/new/datong.png"  v-if="getedCard[6]" @click="showCard(6)">
+            <img class="twt" src="../assets/map/new/twt.png"  v-if="getedCard[7]" @click="showCard(7)">
         </div>
     </div>
 </template>
@@ -61,6 +61,9 @@
 
         },
         methods: {
+            showCard(index){
+                alert("click:"+" "+index)
+            },
             picInit() {
                 this.id = document.getElementById('demoImg')
                 this.mc = new Hammer(this.id)
@@ -134,8 +137,8 @@
                     this.oldX = this.relateX
                     this.oldY = this.relateY
                 }
-                if(this.scale<0.43){this.scale=0.43}
-                if(this.scale>2){this.scale=2}
+                if(this.scale<0.41){this.scale=0.41}
+                if(this.scale>1.5){this.scale=1.5}
                 this.translateX = ev.center.x - (ev.center.x - this.translateX) / this.oldScale * this.scale
                 this.translateY = ev.center.y - (ev.center.y - this.translateY) / this.oldScale * this.scale
 
