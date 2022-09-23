@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import VueAMap from "vue-amap";
 
+Vue.prototype.$store = store
 Vue.config.productionTip = false
 
 new Vue({
@@ -30,5 +31,5 @@ VueAMap.initAMapApiLoader({
 });
 //高德的安全密钥
 window._AMapSecurityConfig = {
-	securityJsCode:'98c6989c8633377c2663fe1d4ed7fb34',
+	securityJsCode: '98c6989c8633377c2663fe1d4ed7fb34',
 }
