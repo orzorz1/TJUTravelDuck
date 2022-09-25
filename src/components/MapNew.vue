@@ -10,7 +10,7 @@
             <img class="ssqs" src="../assets/map/new/ssqs.png"  v-if="getedCard[0]" @click="showCard(0)">
             <img class="datong" src="../assets/map/new/datong.png"  v-if="getedCard[5]" @click="showCard(5)">
             <img class="twt" src="../assets/map/new/twt.png">
-            <!-- <img class="duck" :src="[duckState===0 ? require() : require()]"> -->
+            <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===1 ? 'display:none;' : '' " ref="duck">
             <img src="" alt="">
         </div>
         <transition  name="fade" mode="out-in">
@@ -32,7 +32,7 @@
         data() {
             return {
                 //打卡
-                getedCard:[1,1,1,1,1,1,1],
+                getedCard:[0,0,0,0,0,0,0],
                 //缩放、移动使用
                 config: {},
                 id: null,
@@ -48,7 +48,7 @@
                 oldY: -10,
                 oldScale: 0.43,
                 first:0,
-                duckState:0, //鸭子状态，0为待出发，1为已出发
+                duckState:1, //鸭子状态: 0为待出发，1为已出发
                 newCards: [
                     { "name": "1895行政楼和实事求是石", "show": false, "url": require("../assets/cards/1895.png") },
                     { "name": "32教", "show": false, "url": require("../assets/cards/32.png") },
@@ -75,7 +75,7 @@
 
         },
         computed: {
-			...mapState(['disableButton','disableBtn','ableBtn']),
+			...mapState(['disableButton','disableBtn','ableBtn','campu']),
 		},
         methods: {
             showCard(index){
@@ -115,6 +115,11 @@
                     this.oldY = this.translateY
                     this.oldScale = this.scale
                 }
+            },
+            // 鸭子移动
+            move(){
+
+
             },
             // 初始化图片地位及缩放
             setPosition() {
@@ -289,6 +294,12 @@
         position: absolute;
         left: 1246px;
         top: 41px;
+    }
+    .duck{
+        position: absolute;
+        left: 1500px;
+        top: 200px;
+        width: 300px;
     }
     /* 文化卡片 */
     .Cards {

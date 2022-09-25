@@ -12,8 +12,8 @@
 		<transition name="fade" mode="out-in">
 			<div class="map" v-if="!loading">
 				<transition name="fade" mode="out-in">
-					<MapNew v-if="!campu" ref="MapNew" />
-					<MapOld v-if="campu" ref="MapOld" />
+					<MapNew v-if="!nowCampu" ref="MapNew" />
+					<MapOld v-if="nowCampu" ref="MapOld" />
 				</transition>
 			</div>
 		</transition>
@@ -40,8 +40,8 @@
 		<!-- 切换校区按钮 -->
 		<transition name="fade" mode="out-in">
 			<div class="exchangeCampu" @click="exchangeCampu" v-if="!loading">
-				<div class="campuButton1">{{campu==1?'卫津路':'北洋园'}}</div>
-				<div class="campuButton2">{{campu==0?'卫津路':'北洋园'}}</div>
+				<div class="campuButton1">{{nowCampu==1?'卫津路':'北洋园'}}</div>
+				<div class="campuButton2">{{nowCampu==0?'卫津路':'北洋园'}}</div>
 			</div>
 		</transition>
 		<!-- 选择校区弹窗 -->
@@ -72,11 +72,11 @@
 			Instruction
 		},
 		computed: {
-			...mapState(['disableButton','disableBtn','ableBtn','token']),
+			...mapState(['disableButton','disableBtn','ableBtn','token','campu']),
 		},
 		data() {
 			return {
-				campu: 0, //校区：0新、1老
+				nowCampu: 0, //校区：0新、1老
 				longit: '', // 经度
 				latit: '',  // 纬度
 				loading: true,
@@ -172,7 +172,12 @@
 					require('../assets/cards/jicaiFeng.png'),
 					require('../assets/cards/lake.png'),
 					require('../assets/cards/library.png'),
-					require('../assets/cards/ting.png')
+					require('../assets/cards/ting.png'),
+					require('../assets/Instruction/1.png'),
+					require('../assets/Instruction/2.png'),
+					require('../assets/Instruction/3.png'),
+					require('../assets/Instruction/4.png'),
+					require('../assets/Instruction/5.png'),
 				]
 				for (let img of imgs) {
 					let image = new Image();
@@ -235,7 +240,7 @@
 								// alert(data.accuracy)
 								that.checkPosition(that.latit, that.longit)
 								that.positioning = false
-								this.$store.commit('ableBtn')
+								that.$store.commit('ableBtn')
 							},500)
 						}
 						function onError(data) {
@@ -252,10 +257,13 @@
 			},
 			checkPosition(lat, lng){
 				let flag = 0
-				if(!this.campu){
+				if(!this.nowCampu){
 					for(let i=0; i<this.positionNew.length; i++){
+						//判断在经纬度范围内
 						if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
-							alert(this.positionNew[i].name)
+							this.$refs.MapNew.newCards[i].show = true
+							this.$refs.MapNew.getedCard[i] = 1
+							//获得卡片请求
 							flag = 1
 							break
 						}
@@ -263,7 +271,9 @@
 				}else{
 					for(let i=0; i<this.positionOld.length; i++){
 						if(lat > this.positionOld[i].position[0] && lat < this.positionOld[i].position[1] && lng > this.positionOld[i].position[2] && lng < this.positionOld[i].position[3]){
-							alert(this.positionOld[i].name)
+							this.$refs.MapOld.oldCards[i].show = true
+							this.$refs.MapOld.getedCard[i] = 1
+							//获得卡片请求
 							flag = 1
 							break
 						}
@@ -279,10 +289,10 @@
 			},
 			exchangeCampu(){
 				if(!this.disableButton){
-					if(this.campu==0){
-						this.campu=1
+					if(this.nowCampu==0){
+						this.nowCampu=1
 					}else{
-						this.campu=0
+						this.nowCampu=0
 					}
 				}
 			},
@@ -296,7 +306,7 @@
 			},
 			select(c){
 				this.showSelect = false
-				this.campu = c
+				this.nowCampu = c
 				this.$store.commit('setCampu', c)
 				this.$store.commit('ableBtn')
 			}
@@ -366,12 +376,14 @@
         background-repeat: no-repeat;
 	}
 	.positionError .closeBtn{
-		background-color: aqua;
+		background-image: url("../assets/positioning/close.png");
+		background-size: contain;
+        background-repeat: no-repeat;
 		position: absolute;
 		width: 10vw;
 		height: 10vw;
 		left: 57vw;
-		top: 1.5vh;
+		top: 1.6vh;
 		border-radius: 5vw;	
 	}
 	.showCards {
