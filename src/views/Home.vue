@@ -261,6 +261,7 @@
 					for(let i=0; i<this.positionNew.length; i++){
 						//判断在经纬度范围内
 						if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
+							this.$store.commit('disableBtn')
 							this.$refs.MapNew.newCards[i].show = true
 							this.$refs.MapNew.getedCard[i] = 1
 							this.$refs.MapNew.duckState = 1
@@ -273,6 +274,7 @@
 				}else{
 					for(let i=0; i<this.positionOld.length; i++){
 						if(lat > this.positionOld[i].position[0] && lat < this.positionOld[i].position[1] && lng > this.positionOld[i].position[2] && lng < this.positionOld[i].position[3]){
+							this.$store.commit('disableBtn')
 							this.$refs.MapOld.oldCards[i].show = true
 							this.$refs.MapOld.getedCard[i] = 1
 							this.$refs.MapOld.duckState = 1
@@ -284,6 +286,7 @@
 					}
 				}
 				if(flag == 0){
+					this.$store.commit('disableBtn')
 					this.positionError = true
 				}
 			},
