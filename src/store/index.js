@@ -8,7 +8,7 @@ export default new Vuex.Store({
 		token0: '',
 		token: '',
 		campu: 1,  //校区：0新、1老
-		disableButton: true,
+		disableButton: false,
 	},
 	mutations: {
 		disableBtn() {
