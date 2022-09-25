@@ -11,6 +11,7 @@
             <img class="daHuo" src="../assets/map/old/daHuo.png"  v-if="getedCard[3]" @click="showCard(3)">
             <img class="nine" src="../assets/map/old/nine.png"  v-if="getedCard[4]" @click="showCard(4)">
             <img class="twt" src="../assets/map/old/twt.png">
+            <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===0 ? 'display:none;' : '' " ref="duck">
         </div>
         <transition  name="fade" mode="out-in">
             <div class="Cards" v-for="(card,index) in oldCards" v-if="oldCards[index].show">
@@ -51,6 +52,7 @@
                 oldY: 0,
                 oldScale: 0.45,
                 first:0,
+                duckState:0, //鸭子状态: 0为待出发，1为已出发
                 oldCards: [
                     { "name": "冯骥才艺术研究院", "show": false, "url": require("../assets/cards/jicaiFeng.png") },
                     { "name": "北洋大学堂纪念亭", "show": false, "url": require("../assets/cards/ting.png") },
@@ -116,6 +118,31 @@
                     this.oldY = this.translateY
                     this.oldScale = this.scale
                 }
+            },
+            //鸭子移动
+            duckMove(i){
+                setTimeout(()=>{
+                    if(i===0){//冯骥才
+                        this.$refs.duck.style.left = '1150px'
+                        this.$refs.duck.style.top = '700px'
+                    }
+                    if(i===1){//北洋纪念亭
+                        this.$refs.duck.style.left = '1380px'
+                        this.$refs.duck.style.top = '1400px'
+                    }
+                    if(i===2){//四大湖
+                        this.$refs.duck.style.left = '400px'
+                        this.$refs.duck.style.top = '1320px'
+                    }
+                    if(i===3){//大活
+                        this.$refs.duck.style.left = '300px'
+                        this.$refs.duck.style.top = '450px'
+                    }
+                    if(i===4){//九教
+                        this.$refs.duck.style.left = '1100px'
+                        this.$refs.duck.style.top = '1100px'
+                    }
+                },200)
             },
             // 初始化图片地位及缩放
             setPosition() {
@@ -300,6 +327,13 @@
         position: absolute;
         left: 590px;
         top: 38px;
+    }
+    .duck{
+        position: absolute;
+        left: 740px;
+        top: 170px;
+        width: 100px;
+        transition: 2s;
     }
     /* 文化卡片 */
     .Cards {

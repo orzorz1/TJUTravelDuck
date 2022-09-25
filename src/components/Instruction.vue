@@ -38,7 +38,6 @@
         },
         methods: {
             show(){
-                console.log(this.showPic)
                 this.showPic++
                 if(this.showPic > 5){
                     this.$parent.closeInstruction()

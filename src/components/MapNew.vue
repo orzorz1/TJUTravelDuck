@@ -11,7 +11,6 @@
             <img class="datong" src="../assets/map/new/datong.png"  v-if="getedCard[5]" @click="showCard(5)">
             <img class="twt" src="../assets/map/new/twt.png">
             <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===1 ? 'display:none;' : '' " ref="duck">
-            <img src="" alt="">
         </div>
         <transition  name="fade" mode="out-in">
             <div class="Cards" v-for="(card,index) in newCards" v-if="newCards[index].show">
@@ -33,6 +32,7 @@
             return {
                 //打卡
                 getedCard:[0,0,0,0,0,0,0],
+                // getedCard:[1,1,1,1,1,1,1],
                 //缩放、移动使用
                 config: {},
                 id: null,
@@ -48,7 +48,7 @@
                 oldY: -10,
                 oldScale: 0.43,
                 first:0,
-                duckState:1, //鸭子状态: 0为待出发，1为已出发
+                duckState:0, //鸭子状态: 0为待出发，1为已出发
                 newCards: [
                     { "name": "1895行政楼和实事求是石", "show": false, "url": require("../assets/cards/1895.png") },
                     { "name": "32教", "show": false, "url": require("../assets/cards/32.png") },
@@ -117,9 +117,33 @@
                 }
             },
             // 鸭子移动
-            move(){
-
-
+            duckMove(i){
+                setTimeout(()=>{
+                    if(i===0){//1895
+                        this.$refs.duck.style.left = '1350px'
+                        this.$refs.duck.style.top = '1100px'
+                    }
+                    if(i===1){//32教
+                        this.$refs.duck.style.left = '700px'
+                        this.$refs.duck.style.top = '1320px'
+                    }
+                    if(i===2){//三问桥
+                        this.$refs.duck.style.left = '830px'
+                        this.$refs.duck.style.top = '1020px'
+                    }
+                    if(i===3){//青年湖
+                        this.$refs.duck.style.left = '1100px'
+                        this.$refs.duck.style.top = '250px'
+                    }
+                    if(i===4){//郑东图书馆
+                        this.$refs.duck.style.left = '800px'
+                        this.$refs.duck.style.top = '700px'
+                    }
+                    if(i===5){//大通
+                        this.$refs.duck.style.left = '750px'
+                        this.$refs.duck.style.top = '300px'
+                    }
+                },200)
             },
             // 初始化图片地位及缩放
             setPosition() {
@@ -297,9 +321,10 @@
     }
     .duck{
         position: absolute;
-        left: 1500px;
-        top: 200px;
-        width: 300px;
+        left: 1330px;
+        top: 190px;
+        width: 100px;
+        transition: 2s;
     }
     /* 文化卡片 */
     .Cards {

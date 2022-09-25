@@ -263,6 +263,8 @@
 						if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
 							this.$refs.MapNew.newCards[i].show = true
 							this.$refs.MapNew.getedCard[i] = 1
+							this.$refs.MapNew.duckState = 1
+							this.$refs.MapNew.duckMove(i)
 							//获得卡片请求
 							flag = 1
 							break
@@ -273,6 +275,8 @@
 						if(lat > this.positionOld[i].position[0] && lat < this.positionOld[i].position[1] && lng > this.positionOld[i].position[2] && lng < this.positionOld[i].position[3]){
 							this.$refs.MapOld.oldCards[i].show = true
 							this.$refs.MapOld.getedCard[i] = 1
+							this.$refs.MapOld.duckState = 1
+							this.$refs.MapOld.duckMove(i)
 							//获得卡片请求
 							flag = 1
 							break
