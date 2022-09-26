@@ -150,9 +150,12 @@
 				timerRun++
 				if(timerRun>=5){
 					clearInterval(timer)
+					setTimeout(()=>{
+							that.showInstruct = true
+							setTimeout(()=>{that.showSelect = true},500)
+						},800)
 				}
 			},200)
-
 		},
 
 		methods: {
@@ -240,7 +243,6 @@
 								// alert(data.accuracy)
 								that.checkPosition(that.latit, that.longit)
 								that.positioning = false
-								// that.$store.commit('ableBtn')
 							},500)
 						}
 						function onError(data) {
