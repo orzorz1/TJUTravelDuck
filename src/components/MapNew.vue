@@ -2,22 +2,23 @@
     <div ref="demo" class="demo">
         <div id="demoImg" >
             <img class="map" ref="map" src="../assets/map/new.png">
-            <img class="administrationBuilding" src="../assets/map/new/1895.png" v-if="getedCard[0]" @click="showCard(0)">
-            <img class="colosseum" src="../assets/map/new/32.png" v-if="getedCard[1]" @click="showCard(1)">
-            <img class="bridge" src="../assets/map/new/bridge.png"  v-if="getedCard[2]" @click="showCard(2)">
-            <img class="lake" src="../assets/map/new/lake.png" v-if="getedCard[3]" @click="showCard(3)">
-            <img class="library" src="../assets/map/new/library.png" v-if="getedCard[4]" @click="showCard(4)">
-            <img class="ssqs" src="../assets/map/new/ssqs.png"  v-if="getedCard[0]" @click="showCard(0)">
-            <img class="datong" src="../assets/map/new/datong.png"  v-if="getedCard[5]" @click="showCard(5)">
+            <img class="administrationBuilding" src="../assets/map/new/1895.png" :style="{'opacity' :getedCard[0] ? '' :'0'}"  @click="showCard(0)">
+            <img class="colosseum" src="../assets/map/new/32.png" :style="{'opacity' :getedCard[1] ? '' :'0'}" @click="showCard(1)">
+            <img class="bridge" src="../assets/map/new/bridge.png"  :style="{'opacity' :getedCard[2] ? '' :'0'}" @click="showCard(2)">
+            <img class="lake" src="../assets/map/new/lake.png" :style="{'opacity' :getedCard[3] ? '' :'0'}" @click="showCard(3)">
+            <img class="library" src="../assets/map/new/library.png" :style="{'opacity' :getedCard[4] ? '' :'0'}" @click="showCard(4)">
+            <img class="ssqs" src="../assets/map/new/ssqs.png"  :style="{'opacity' :getedCard[0] ? '' :'0'}" @click="showCard(0)">
+            <img class="datong" src="../assets/map/new/datong.png"  :style="{'opacity' :getedCard[5] ? '' :'0'}" @click="showCard(5)">
             <img class="twt" src="../assets/map/new/twt.png">
             <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===1 ? 'display:none;' : '' " ref="duck">
         </div>
         <transition  name="fade" mode="out-in">
             <div class="Cards" v-for="(card,index) in newCards" v-if="newCards[index].show">
                 <img class="card" :src="card.url" />
-                <div class="closeCard" @click="closeCard(index)"></div>
+                <div class="getPosition" @click="getPosition(index)" v-if="!getedCard[index]"></div>
             </div>
         </transition>
+        <div class="closeMask" v-for="(card,index) in newCards" v-if="newCards[index].show" @click="closeCard(index)"></div>
     </div>
 </template>
 
@@ -62,6 +63,41 @@
             this.$nextTick(() => {
                 this.picInit()
             })
+        },
+        beforeMount(){
+            if(this.campu===1){
+                for(let k=0; k<this.getedCard.length; k++){
+                    this.getedCard[k] = 1
+                }
+            }else{
+                //获取已获得卡片
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET',that.apiUrl+'/api/v1/card/all?token='+that.token);
+                xhr.send(null);
+                xhr.onloadend = function(e){
+                    that.$store.commit('ableBtn')
+                    if(e.target.status===200){
+                        var json = JSON.parse(e.target.response)
+                        for(let k=0;k<json.result.length;k++){
+                            if(json.result[k].id===21){
+                                that.getedCard[0]=1
+                            }else if(json.result[k].id===22){
+                                that.getedCard[1]=1
+                            }else if(json.result[k].id===23){
+                                that.getedCard[2]=1
+                            }else if(json.result[k].id===24){
+                                that.getedCard[3]=1
+                            }else if(json.result[k].id===25){
+                                that.getedCard[4]=1
+                            }else if(json.result[k].id===26){
+                                that.getedCard[5]=1
+                            }
+                        }
+                        that.newCards[0].show = true
+                        that.newCards[0].show = false
+                    }
+                }
+            }
         },
         created(){
             setTimeout(()=>{
@@ -121,7 +157,7 @@
                 setTimeout(()=>{
                     if(i===0){//1895
                         this.$refs.duck.style.left = '1350px'
-                        this.$refs.duck.style.top = '1100px'
+                        this.$refs.duck.style.top = '1050px'
                     }
                     if(i===1){//32教
                         this.$refs.duck.style.left = '700px'
@@ -132,11 +168,11 @@
                         this.$refs.duck.style.top = '1020px'
                     }
                     if(i===3){//青年湖
-                        this.$refs.duck.style.left = '1100px'
-                        this.$refs.duck.style.top = '250px'
+                        this.$refs.duck.style.left = '1050px'
+                        this.$refs.duck.style.top = '150px'
                     }
                     if(i===4){//郑东图书馆
-                        this.$refs.duck.style.left = '800px'
+                        this.$refs.duck.style.left = '750px'
                         this.$refs.duck.style.top = '700px'
                     }
                     if(i===5){//大通
@@ -243,7 +279,10 @@
                     setTimeout(callback, 1000 / 60)
                 }
             },
-
+            getPosition(i){
+                this.closeCard(i)
+                this.$parent.getLocation(i)
+            }
         }
     }
 </script>
@@ -323,11 +362,12 @@
         position: absolute;
         left: 1330px;
         top: 190px;
-        width: 100px;
+        width: 150px;
         transition: 2s;
     }
     /* 文化卡片 */
     .Cards {
+        z-index: 1;
         position: absolute;
         top: 13vh;
         height: 77vh;
@@ -336,17 +376,26 @@
         flex-direction: column;
         align-items: center;
         margin-left: 10vw;
+        pointer-events: none;
     }
 
     .card {
         width: 80vw;
+        pointer-events: auto;
     }
 
-    .closeCard {
-        background-image: url("../assets/cards/closeCard.png");
+    .getPosition {
+        /* background-image: url("../assets/cards/closeCard.png"); */
+		background-image: url("../assets/icon/location.png");
         background-size: contain;
         background-repeat: no-repeat;
         width: 7vh;
         height: 7vh;
+        pointer-events: auto;
+    }
+    .closeMask{
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
     }
 </style>

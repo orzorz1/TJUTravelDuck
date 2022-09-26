@@ -2,23 +2,24 @@
     <div ref="demo" class="demo">
         <div id="demoImg" >
             <img class="map" ref="map" src="../assets/map/old.png">
-            <img class="jiCaiFeng" src="../assets/map/old/feng.png" v-if="getedCard[0]" @click="showCard(0)">
-            <img class="ting" src="../assets/map/old/ting.png" v-if="getedCard[1]" @click="showCard(1)">
-            <img class="friendshipLake" src="../assets/map/old/friendshipLake.png"  v-if="getedCard[2]" @click="showCard(2)">
-            <img class="dedicationLake" src="../assets/map/old/dedicationLake.png"  v-if="getedCard[2]" @click="showCard(2)">
-            <img class="loveNightLake" src="../assets/map/old/loveNightLake.png" v-if="getedCard[2]" @click="showCard(2)">
-            <img class="youthLake" src="../assets/map/old/youthLake.png" v-if="getedCard[2]" @click="showCard(2)">
-            <img class="daHuo" src="../assets/map/old/daHuo.png"  v-if="getedCard[3]" @click="showCard(3)">
-            <img class="nine" src="../assets/map/old/nine.png"  v-if="getedCard[4]" @click="showCard(4)">
+            <img class="jiCaiFeng" src="../assets/map/old/feng.png" :style="{'opacity': getedCard[0] ? '':'0' }" @click="showCard(0)">
+            <img class="ting" src="../assets/map/old/ting.png" :style="{'opacity': getedCard[1] ? '':'0' }" @click="showCard(1)">
+            <img class="friendshipLake" src="../assets/map/old/friendshipLake.png"  :style="{'opacity': getedCard[2] ? '':'0' }" @click="showCard(2)">
+            <img class="dedicationLake" src="../assets/map/old/dedicationLake.png"  :style="{'opacity': getedCard[2] ? '':'0' }" @click="showCard(2)">
+            <img class="loveNightLake" src="../assets/map/old/loveNightLake.png" :style="{'opacity': getedCard[2] ? '':'0' }" @click="showCard(2)">
+            <img class="youthLake" src="../assets/map/old/youthLake.png" :style="{'opacity': getedCard[2] ? '':'0' }" @click="showCard(2)">
+            <img class="daHuo" src="../assets/map/old/daHuo.png"  :style="{'opacity': getedCard[3] ? '':'0' }" @click="showCard(3)">
+            <img class="nine" src="../assets/map/old/nine.png"  :style="{'opacity': getedCard[4] ? '':'0' }" @click="showCard(4)">
             <img class="twt" src="../assets/map/old/twt.png">
             <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===0 ? 'display:none;' : '' " ref="duck">
         </div>
         <transition  name="fade" mode="out-in">
             <div class="Cards" v-for="(card,index) in oldCards" v-if="oldCards[index].show">
                 <img class="card" :src="card.url" />
-                <div class="closeCard" @click="closeCard(index)"></div>
+                <div class="getPosition" @click="getPosition(index)" v-if="!getedCard[index]"></div>
             </div>
         </transition>
+        <div class="closeMask" v-for="(card,index) in oldCards" v-if="oldCards[index].show" @click="closeCard(index)"></div>
     </div>
 </template>
 
@@ -36,7 +37,8 @@
         data() {
             return {
                 //打卡
-                getedCard:[1,1,1,1,1],
+                // getedCard:[1,1,1,1,1],
+                getedCard:[0,0,0,0,0],
                 //缩放、移动使用
                 config: {},
                 id: null,
@@ -66,6 +68,40 @@
                 this.picInit()
             })
         },
+        beforeMount(){
+            let that = this
+            if(this.campu===0){
+                for(let k=0; k<this.getedCard.length; k++){
+                    this.getedCard[k] = 1
+                }
+            }else{
+                //获取已获得卡片
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET',that.apiUrl+'/api/v1/card/all?token='+that.token);
+                xhr.send(null);
+                xhr.onloadend = function(e){
+                    that.$store.commit('ableBtn')
+                    if(e.target.status===200){
+                        var json = JSON.parse(e.target.response)
+                        for(let k=0;k<json.result.length;k++){
+                            if(json.result[k].id===11){
+                                that.getedCard[0]=1
+                            }else if(json.result[k].id===12){
+                                that.getedCard[1]=1
+                            }else if(json.result[k].id===13){
+                                that.getedCard[2]=1
+                            }else if(json.result[k].id===14){
+                                that.getedCard[3]=1
+                            }else if(json.result[k].id===15){
+                                that.getedCard[4]=1
+                            }
+                        }
+                        that.oldCards[0].show = true
+                        that.oldCards[0].show = false
+                    }
+                }
+            }
+        },
         created(){
             setTimeout(()=>{
                 const position = {
@@ -78,7 +114,7 @@
 
         },
         computed: {
-			...mapState(['disableButton','disableBtn','ableBtn']),
+			...mapState(['disableButton','disableBtn','ableBtn','campu','token','apiUrl']),
 		},
         methods: {
             showCard(index){
@@ -123,12 +159,12 @@
             duckMove(i){
                 setTimeout(()=>{
                     if(i===0){//冯骥才
-                        this.$refs.duck.style.left = '1150px'
-                        this.$refs.duck.style.top = '700px'
+                        this.$refs.duck.style.left = '1120px'
+                        this.$refs.duck.style.top = '660px'
                     }
                     if(i===1){//北洋纪念亭
-                        this.$refs.duck.style.left = '1380px'
-                        this.$refs.duck.style.top = '1400px'
+                        this.$refs.duck.style.left = '1350px'
+                        this.$refs.duck.style.top = '1360px'
                     }
                     if(i===2){//四大湖
                         this.$refs.duck.style.left = '400px'
@@ -139,8 +175,8 @@
                         this.$refs.duck.style.top = '450px'
                     }
                     if(i===4){//九教
-                        this.$refs.duck.style.left = '1100px'
-                        this.$refs.duck.style.top = '1100px'
+                        this.$refs.duck.style.left = '1050px'
+                        this.$refs.duck.style.top = '1060px'
                     }
                 },200)
             },
@@ -243,6 +279,10 @@
                 return window[Hammer.prefixed(window, 'requestAnimationFrame')] || function (callback) {
                     setTimeout(callback, 1000 / 60)
                 }
+            },
+            getPosition(i){
+                this.closeCard(i)
+                this.$parent.getLocation(i)
             }
         }
     }
@@ -332,11 +372,12 @@
         position: absolute;
         left: 740px;
         top: 170px;
-        width: 100px;
+        width: 150px;
         transition: 2s;
     }
     /* 文化卡片 */
     .Cards {
+        z-index: 1;
         position: absolute;
         top: 13vh;
         height: 77vh;
@@ -345,18 +386,28 @@
         flex-direction: column;
         align-items: center;
         margin-left: 10vw;
+        pointer-events: none;
     }
 
     .card {
         width: 80vw;
+        pointer-events: auto;
+
     }
 
-    .closeCard {
-        background-image: url("../assets/cards/closeCard.png");
+    .getPosition {
+        /* background-image: url("../assets/cards/closeCard.png"); */
+		background-image: url("../assets/icon/location.png");
         background-size: contain;
         background-repeat: no-repeat;
         width: 7vh;
         height: 7vh;
+        pointer-events: auto;
+    }
+    .closeMask{
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
     }
     
 </style>

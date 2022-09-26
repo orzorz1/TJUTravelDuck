@@ -6,9 +6,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		token0: '',
-		token: '',
-		campu: 1,  //校区：0新、1老
+		token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOlsiMzAyMTIzNDUzMyIsIjEiXSwiZXhwIjoxNjY0NTI2NjgzfQ.G8_2a7Kypxiavn1nFg3ifrl0_B1hTMAXjt8KocECQ_k',
+		campu: -1,  //校区：0新、1老
 		disableButton: false,
+		apiUrl: "http://101.43.148.116:8081"
 	},
 	mutations: {
 		disableBtn() {

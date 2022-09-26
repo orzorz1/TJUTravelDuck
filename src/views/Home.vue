@@ -13,7 +13,7 @@
 			<div class="map" v-if="!loading">
 				<transition name="fade" mode="out-in">
 					<MapNew v-if="!nowCampu" ref="MapNew" />
-					<MapOld v-if="nowCampu" ref="MapOld" />
+					<MapOld v-if="nowCampu"  ref="MapOld" />
 				</transition>
 			</div>
 		</transition>
@@ -34,9 +34,9 @@
 			<div class="instruction" v-if="!loading" @click="showInstruction"></div>
 		</transition>
 		<!-- 定位按钮 -->
-		<transition name="fade" mode="out-in">
+		<!-- <transition name="fade" mode="out-in">
 			<div class="location" @click="getLocation" v-if="!loading"></div>
-		</transition>
+		</transition> -->
 		<!-- 切换校区按钮 -->
 		<transition name="fade" mode="out-in">
 			<div class="exchangeCampu" @click="exchangeCampu" v-if="!loading">
@@ -72,7 +72,7 @@
 			Instruction
 		},
 		computed: {
-			...mapState(['disableButton','disableBtn','ableBtn','token','campu']),
+			...mapState(['disableButton','disableBtn','ableBtn','token','campu','apiUrl']),
 		},
 		data() {
 			return {
@@ -113,7 +113,7 @@
 				let token = that.$route.query.token
 				that.$store.commit('setToken0', token)
 				var xhr = new XMLHttpRequest();
-				xhr.open('POST','http://101.42.135.145:8081/api/v1/auth/client');
+				xhr.open('POST',that.apiUrl+'/api/v1/auth/client');//用户登录
 				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 				xhr.send("token="+token);
 				xhr.onloadend = function(e){
@@ -124,18 +124,17 @@
 					that.$store.commit('setToken', json.result)
 					if(json.message==='曾经登录过'){
 						var xhr = new XMLHttpRequest();
-						xhr.open('GET','http://101.42.135.145:8081/api/v1/school?token='+that.token);
+						xhr.open('GET',that.apiUrl+'/api/v1/school?token='+that.token);//查询校区
 						xhr.send(null);
 						xhr.onloadend = function(e){
 							that.$store.commit('ableBtn')
 							if(e.target.status===200){
 								var json = JSON.parse(e.target.response)
-								console.log(json)
 								if(json.result === "卫津路校区"){
-									that.campu = 1
+									that.nowCampu = 1
 									that.$store.commit('setCampu', 1)
 								}else{
-									that.campu = 0
+									that.nowCampu = 0
 									that.$store.commit('setCampu', 0)
 								}
 							}
@@ -155,7 +154,7 @@
 							setTimeout(()=>{that.showSelect = true},500)
 						},800)
 				}
-			},200)
+			},500)
 		},
 
 		methods: {
@@ -195,96 +194,125 @@
 					};
 				}
 			},
-			getLocation() {
-				if(!this.disableButton){
-					this.$store.commit('disableBtn')
-					this.positioning = true
-					// 先定义that = this   
-					var that = this
+			getLocation(index) {
+				this.$store.commit('disableBtn')
+				this.positioning = true
+				// 先定义that = this   
+				var that = this
 
-					// 生成地图
-					var map = new window.AMap.Map('container', {
-						resizeEnable: true,
-						zoom: 11,
-						showIndoorMap: false, // 是否在有矢量底图的时候自动展示室内地图，PC默认true,移动端默认false
-						dragEnable: true, // 地图是否可通过鼠标拖拽平移，默认为true
-						keyboardEnable: false, // 地图是否可通过键盘控制，默认为true
-						doubleClickZoom: true, // 地图是否可通过双击鼠标放大地图，默认为true
-						zoomEnable: true, // 地图是否可缩放，默认值为true
-						rotateEnable: false, // 地图是否可旋转，3D视图默认为true，2D视图默认false
-						viewMode: '3D'
+				// 生成地图
+				var map = new window.AMap.Map('container', {
+					resizeEnable: true,
+					zoom: 11,
+					showIndoorMap: false, // 是否在有矢量底图的时候自动展示室内地图，PC默认true,移动端默认false
+					dragEnable: true, // 地图是否可通过鼠标拖拽平移，默认为true
+					keyboardEnable: false, // 地图是否可通过键盘控制，默认为true
+					doubleClickZoom: true, // 地图是否可通过双击鼠标放大地图，默认为true
+					zoomEnable: true, // 地图是否可缩放，默认值为true
+					rotateEnable: false, // 地图是否可旋转，3D视图默认为true，2D视图默认false
+					viewMode: '3D'
+				})
+
+
+				// 获取到当前位置的定位
+				AMap.plugin('AMap.Geolocation', function () {
+					var geolocation = new AMap.Geolocation({
+						// 是否使用高精度定位，默认：true
+						enableHighAccuracy: true,
+						// 设置定位超时时间，默认：无穷大
+						timeout: 10000,
+						// 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+						buttonOffset: new AMap.Pixel(10, 20),
+						//  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+						zoomToAccuracy: true,
+						//  定位按钮的排放位置,  RB表示右下
+						buttonPosition: 'RB'
 					})
 
+					geolocation.getCurrentPosition()
+					AMap.event.addListener(geolocation, 'complete', onComplete)
+					AMap.event.addListener(geolocation, 'error', onError)
 
-					// 获取到当前位置的定位
-					AMap.plugin('AMap.Geolocation', function () {
-						var geolocation = new AMap.Geolocation({
-							// 是否使用高精度定位，默认：true
-							enableHighAccuracy: true,
-							// 设置定位超时时间，默认：无穷大
-							timeout: 10000,
-							// 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-							buttonOffset: new AMap.Pixel(10, 20),
-							//  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-							zoomToAccuracy: true,
-							//  定位按钮的排放位置,  RB表示右下
-							buttonPosition: 'RB'
-						})
-
-						geolocation.getCurrentPosition()
-						AMap.event.addListener(geolocation, 'complete', onComplete)
-						AMap.event.addListener(geolocation, 'error', onError)
-
-						function onComplete(data) {
-							setTimeout(()=>{
-								// data是具体的定位信息
-								that.longit = data.position.lng
-								that.latit = data.position.lat
-								// alert(data.accuracy)
-								that.checkPosition(that.latit, that.longit)
-								that.positioning = false
-							},500)
-						}
-						function onError(data) {
-							// 定位出错
-							setTimeout(()=>{
-								console.log('定位失败')
-								that.positioning = false
-								that.positionError = true
-							},500)
-						}
-					})
-					that.maps = map
-				}
+					function onComplete(data) {
+						setTimeout(()=>{
+							// data是具体的定位信息
+							that.longit = data.position.lng
+							that.latit = data.position.lat
+							// alert(data.accuracy)
+							that.positioning = false
+							that.checkPosition(that.latit, that.longit, index)
+						},500)
+					}
+					function onError(data) {
+						// 定位出错
+						setTimeout(()=>{
+							console.log('定位失败')
+							that.positioning = false
+							that.positionError = true
+						},500)
+					}
+				})
+				that.maps = map
 			},
-			checkPosition(lat, lng){
+			checkPosition(lat, lng, i){
 				this.$store.commit('disableBtn')
 				let flag = 0
 				if(!this.nowCampu){
-					for(let i=0; i<this.positionNew.length; i++){
-						//判断在经纬度范围内
-						if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
+					//新校区
+					//判断在经纬度范围内
+					if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
+						this.$refs.MapNew.duckState = 1
+						this.$refs.MapNew.getedCard[i] = 1
+						this.$refs.MapNew.duckMove(i)
+						setTimeout(()=>{
 							this.$refs.MapNew.newCards[i].show = true
-							this.$refs.MapNew.getedCard[i] = 1
-							this.$refs.MapNew.duckState = 1
-							this.$refs.MapNew.duckMove(i)
-							//获得卡片请求
-							flag = 1
-							break
+						},2200)
+						//获得卡片请求
+						if(i===0){let id=21}
+						else if(i===1){let id=22}
+						else if(i===2){let id=23}
+						else if(i===3){let id=24}
+						else if(i===4){let id=25}
+						else if(i===5){let id=26}
+						var xhr = new XMLHttpRequest();
+						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
+						xhr.send("cardId="+id);
+						xhr.onloadend = function(e){
+							that.$store.commit('ableBtn')
+							if(e.target.status===200){
+								var json = JSON.parse(e.target.response)
+							}
 						}
+						flag = 1
 					}
+					
 				}else{
-					for(let i=0; i<this.positionOld.length; i++){
-						if(lat > this.positionOld[i].position[0] && lat < this.positionOld[i].position[1] && lng > this.positionOld[i].position[2] && lng < this.positionOld[i].position[3]){
+					if(lat > this.positionOld[i].position[0] && lat < this.positionOld[i].position[1] && lng > this.positionOld[i].position[2] && lng < this.positionOld[i].position[3]){
+						this.$refs.MapOld.duckState = 1
+						this.$refs.MapOld.getedCard[i] = 1
+						this.$refs.MapOld.duckMove(i)
+						setTimeout(()=>{
 							this.$refs.MapOld.oldCards[i].show = true
-							this.$refs.MapOld.getedCard[i] = 1
-							this.$refs.MapOld.duckState = 1
-							this.$refs.MapOld.duckMove(i)
-							//获得卡片请求
-							flag = 1
-							break
+						},2200)
+						//获得卡片请求
+						if(i===0){let id=11}
+						else if(i===1){let id=12}
+						else if(i===2){let id=13}
+						else if(i===3){let id=14}
+						else if(i===4){let id=15}
+						var xhr = new XMLHttpRequest();
+						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
+						xhr.send("cardId="+id);
+						xhr.onloadend = function(e){
+							that.$store.commit('ableBtn')
+							if(e.target.status===200){
+								var json = JSON.parse(e.target.response)
+								console.log(json)
+							}
 						}
+						flag = 1
 					}
+					
 				}
 				if(flag == 0){
 					this.positionError = true
@@ -296,7 +324,7 @@
 			},
 			exchangeCampu(){
 				if(!this.disableButton){
-					if(this.nowCampu==0){
+					if(this.nowCampu===0){
 						this.nowCampu=1
 					}else{
 						this.nowCampu=0
