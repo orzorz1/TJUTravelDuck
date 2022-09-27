@@ -268,12 +268,13 @@
 							this.$refs.MapNew.newCards[i].show = true
 						},2200)
 						//获得卡片请求
-						if(i===0){let id=21}
-						else if(i===1){let id=22}
-						else if(i===2){let id=23}
-						else if(i===3){let id=24}
-						else if(i===4){let id=25}
-						else if(i===5){let id=26}
+						let id = 0
+						if(i===0){id=21}
+						else if(i===1){id=22}
+						else if(i===2){id=23}
+						else if(i===3){id=24}
+						else if(i===4){id=25}
+						else if(i===5){id=26}
 						var xhr = new XMLHttpRequest();
 						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
 						xhr.send("cardId="+id);
@@ -295,11 +296,12 @@
 							this.$refs.MapOld.oldCards[i].show = true
 						},2200)
 						//获得卡片请求
-						if(i===0){let id=11}
-						else if(i===1){let id=12}
-						else if(i===2){let id=13}
-						else if(i===3){let id=14}
-						else if(i===4){let id=15}
+						let id = 0
+						if(i===0){id=11}
+						else if(i===1){id=12}
+						else if(i===2){id=13}
+						else if(i===3){id=14}
+						else if(i===4){id=15}
 						var xhr = new XMLHttpRequest();
 						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
 						xhr.send("cardId="+id);
