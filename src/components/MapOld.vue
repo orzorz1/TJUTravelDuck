@@ -77,22 +77,22 @@
             }else{
                 //获取已获得卡片
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET',that.apiUrl+'/api/v1/card/all?token='+that.token);
+                xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
                 xhr.send(null);
                 xhr.onloadend = function(e){
                     that.$store.commit('ableBtn')
                     if(e.target.status===200){
                         var json = JSON.parse(e.target.response)
                         for(let k=0;k<json.result.length;k++){
-                            if(json.result[k].id===11){
+                            if(json.result[k] && json.result[k].id===11){
                                 that.getedCard[0]=1
-                            }else if(json.result[k].id===12){
+                            }else if(json.result[k] && json.result[k].id===12){
                                 that.getedCard[1]=1
-                            }else if(json.result[k].id===13){
+                            }else if(json.result[k] && json.result[k].id===13){
                                 that.getedCard[2]=1
-                            }else if(json.result[k].id===14){
+                            }else if(json.result[k] && json.result[k].id===14){
                                 that.getedCard[3]=1
-                            }else if(json.result[k].id===15){
+                            }else if(json.result[k] && json.result[k].id===15){
                                 that.getedCard[4]=1
                             }
                         }

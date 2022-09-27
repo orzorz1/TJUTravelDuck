@@ -29,6 +29,14 @@
 				<div class="closeBtn" @click="closeError"></div>
 			</div>
 		</transition>
+		<!-- 集齐卡片弹窗弹窗 -->
+		<transition name="fade" mode="out-in">
+			<div v-if="got">
+				<div class="gotMask" @click="closeGot">
+					<div class="got" @click.stop=""></div>
+				</div>
+			</div>
+		</transition>
 		<!-- 说明按钮 -->
 		<transition name="fade" mode="out-in">
 			<div class="instruction" v-if="!loading" @click="showInstruction"></div>
@@ -84,6 +92,7 @@
 				positionError: false,
 				showInstruct: false,
 				showSelect: false,
+				got: false,
 				positionNew:[
 							{"name":"1895行政楼和实事求是石", "position":[38.998418, 39.000936, 117.319325, 117.321283], "index":0},
 							{"name":"斗兽场", "position":[38.9968378, 38.997976, 117.3208753, 117.32235], "index":1},
@@ -282,6 +291,14 @@
 							that.$store.commit('ableBtn')
 							if(e.target.status===200){
 								var json = JSON.parse(e.target.response)
+								let count = 0
+								for(let k=0;k<that.$refs.MapNew.getedCard.length;k++){
+									if(that.$refs.MapNew.getedCard===1){count++}
+								}
+								if(that.$refs.MapNew.getedCard.length===count){
+									that.got = true
+									this.$store.commit('disableBtn')
+								}
 							}
 						}
 						flag = 1
@@ -301,7 +318,7 @@
 						else if(i===1){id=12}
 						else if(i===2){id=13}
 						else if(i===3){id=14}
-						else if(i===4){id=15}
+						else if(i===4){dfeid=15}
 						var xhr = new XMLHttpRequest();
 						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
 						xhr.send("cardId="+id);
@@ -309,7 +326,14 @@
 							that.$store.commit('ableBtn')
 							if(e.target.status===200){
 								var json = JSON.parse(e.target.response)
-								console.log(json)
+								let count = 0
+								for(let k=0;k<that.$refs.MapOld.getedCard.length;k++){
+									if(that.$refs.MapOld.getedCard===1){count++}
+								}
+								if(that.$refs.MapOld.getedCard.length===count){
+									that.got = true
+									this.$store.commit('disableBtn')
+								}
 							}
 						}
 						flag = 1
@@ -319,6 +343,10 @@
 				if(flag == 0){
 					this.positionError = true
 				}
+			},
+			closeGot(){
+				this.$store.commit('ableBtn')
+				this.got = false
 			},
 			closeError(){
 				this.$store.commit('ableBtn')
@@ -387,6 +415,32 @@
 		margin: 0;
 		width: 100vw;
 		height: 100vh;
+	}
+	.gotMask{
+		position: absolute;
+		z-index: 0;
+		height: 100vh;
+		width: 100vw;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	.gotMask1{
+		position: absolute;
+		z-index: 0;
+		height: 100vh;
+		width: 100vw;
+
+	}
+	.got{
+		z-index: 1;
+		background-image: url('../assets/cards/collected.png');
+		background-size: contain;
+        background-repeat: no-repeat;
+		top: 20vh;
+		width: 70vw;
+		height: 50vh;
 	}
 	.positioning{
 		background-image: url('../assets/positioning/background.png');
