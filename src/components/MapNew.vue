@@ -15,7 +15,7 @@
         <transition  name="fade" mode="out-in">
             <div class="Cards" v-for="(card,index) in newCards" v-if="newCards[index].show">
                 <img class="card" :src="card.url" />
-                <div class="getPosition" @click="getPosition(index)" v-if="!getedCard[index]"></div>
+                <img class="getPosition" @click="getPosition(index)" v-if="!getedCard[index]" src="../assets/icon/clockIn.png"/>
             </div>
         </transition>
         <div class="closeMask" v-for="(card,index) in newCards" v-if="newCards[index].show" @click="closeCard(index)"></div>
@@ -383,14 +383,9 @@
         width: 80vw;
         pointer-events: auto;
     }
-
     .getPosition {
-        /* background-image: url("../assets/cards/closeCard.png"); */
-		background-image: url("../assets/icon/location.png");
-        background-size: contain;
-        background-repeat: no-repeat;
-        width: 7vh;
-        height: 7vh;
+        margin-top: 1vh;
+        width: 35vw;
         pointer-events: auto;
     }
     .closeMask{
