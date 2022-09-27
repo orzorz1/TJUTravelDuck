@@ -117,9 +117,7 @@
 							{"name":"第九教学楼", "position":[39.1087541, 39.10952, 117.174337, 117.17543134], "index":4}],
 			}
 		},
-		beforeCreate(){
 
-		},
 		beforeMount() {
 			this.preload()
 			this.$store.commit('disableBtn')
@@ -257,6 +255,7 @@
 							// alert(data.accuracy)
 							that.positioning = false
 							that.checkPosition(that.latit, that.longit, index)
+							// that.checkPosition(38.9976491, 117.3084621, index)
 						},500)
 					}
 					function onError(data) {
@@ -273,6 +272,7 @@
 			checkPosition(lat, lng, i){
 				this.$store.commit('disableBtn')
 				let flag = 0
+				let that = this
 				if(!this.nowCampu){
 					//新校区
 					//判断在经纬度范围内
@@ -281,7 +281,9 @@
 						this.$refs.MapNew.getedCard[i] = 1
 						this.$refs.MapNew.duckMove(i)
 						setTimeout(()=>{
-							this.$refs.MapNew.newCards[i].show = true
+							if(!this.got){
+								this.$refs.MapNew.newCards[i].show = true
+							}
 						},2200)
 						//获得卡片请求
 						let id = 0
@@ -292,7 +294,8 @@
 						else if(i===4){id=25}
 						else if(i===5){id=26}
 						var xhr = new XMLHttpRequest();
-						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
+						xhr.open('POST',that.apiUrl+'/api/v1/card/user?token='+that.token);
+						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 						xhr.send("cardId="+id);
 						xhr.onloadend = function(e){
 							that.$store.commit('ableBtn')
@@ -300,7 +303,8 @@
 								var json = JSON.parse(e.target.response)
 								let count = 0
 								for(let k=0;k<that.$refs.MapNew.getedCard.length;k++){
-									if(that.$refs.MapNew.getedCard===1){count++}
+									console.log(that.$refs.MapNew.getedCard.length)
+									if(that.$refs.MapNew.getedCard[k]===1){count++}
 								}
 								if(that.$refs.MapNew.getedCard.length===count){
 									that.got = true
@@ -317,7 +321,9 @@
 						this.$refs.MapOld.getedCard[i] = 1
 						this.$refs.MapOld.duckMove(i)
 						setTimeout(()=>{
-							this.$refs.MapOld.oldCards[i].show = true
+							if(!this.got){
+								this.$refs.MapOld.oldCards[i].show = true
+							}
 						},2200)
 						//获得卡片请求
 						let id = 0
@@ -327,7 +333,8 @@
 						else if(i===3){id=14}
 						else if(i===4){dfeid=15}
 						var xhr = new XMLHttpRequest();
-						xhr.open('GET',that.apiUrl+'/api/v1/card/user?token='+that.token);
+						xhr.open('POST',that.apiUrl+'/api/v1/card/user?token='+that.token);
+						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 						xhr.send("cardId="+id);
 						xhr.onloadend = function(e){
 							that.$store.commit('ableBtn')

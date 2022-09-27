@@ -32,7 +32,7 @@
         data() {
             return {
                 //打卡
-                getedCard:[0,0,0,0,0,0,0],
+                getedCard:[0,0,0,0,0,0],
                 // getedCard:[1,1,1,1,1,1,1],
                 //缩放、移动使用
                 config: {},
@@ -65,6 +65,7 @@
             })
         },
         beforeMount(){
+            let that = this
             if(this.campu===1){
                 for(let k=0; k<this.getedCard.length; k++){
                     this.getedCard[k] = 1
@@ -111,7 +112,7 @@
 
         },
         computed: {
-			...mapState(['disableButton','disableBtn','ableBtn','campu']),
+			...mapState(['disableButton','disableBtn','ableBtn','campu','apiUrl','token']),
 		},
         methods: {
             showCard(index){
