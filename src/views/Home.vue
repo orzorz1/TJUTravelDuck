@@ -41,15 +41,15 @@
 		<transition name="fade" mode="out-in">
 			<div class="instruction" v-if="!loading" @click="showInstruction"></div>
 		</transition>
-		<!-- 定位按钮 -->
+		<!-- 定位按钮,函数已修改，用不了了 -->
 		<!-- <transition name="fade" mode="out-in">
 			<div class="location" @click="getLocation" v-if="!loading"></div>
 		</transition> -->
 		<!-- 切换校区按钮 -->
 		<transition name="fade" mode="out-in">
 			<div class="exchangeCampu" @click="exchangeCampu" v-if="!loading">
-				<div class="campuButton1">{{nowCampu==1?'卫津路':'北洋园'}}</div>
-				<div class="campuButton2">{{nowCampu==0?'卫津路':'北洋园'}}</div>
+				<div class="campuButton1" :style="{'background-color': nowCampu ? '#E9EAE4':'white'}">卫津路</div>
+				<div class="campuButton2" :style="{'background-color': !nowCampu ? '#E9EAE4':'white'}">北洋园</div>
 			</div>
 		</transition>
 		<!-- 选择校区弹窗 -->
@@ -57,6 +57,12 @@
 			<div class="selectCampu" v-if="showSelect">
 				<img src="../assets/select/Old.png" class="btnOld" @click="select(1)">
 				<img src="../assets/select/New.png" class="btnNew" @click="select(0)">
+			</div>
+		</transition>
+		<!-- 说明弹窗 -->
+		<transition name="fade" mode="out-in">
+			<div class="instruct_back"  v-if="instruct" @click="closeInstrcuk">
+				<img class="instruct" v-if="instruct" src="../assets/Instruction/instructions.png"/>
 			</div>
 		</transition>
 	</div>
@@ -90,7 +96,8 @@
 				loading: true,
 				positioning: false,
 				positionError: false,
-				showInstruct: false,
+				showInstruct: false, //首次登录引导
+				instruct:false, //说明页
 				showSelect: false,
 				got: false,
 				positionNew:[
@@ -363,11 +370,14 @@
 			},
 			showInstruction(){
 				if(!this.disableButton){
-					this.showInstruct = true
+					this.instruct = true
 				}
 			},
 			closeInstruction(){
 				this.showInstruct = false
+			},
+			closeInstrcuk(){
+				this.instruct = false
 			},
 			select(c){
 				this.showSelect = false
@@ -490,8 +500,8 @@
 		border-radius: 100px;
 		display: block;
 		position: fixed;
-		height: 30px;
-		width: 30px;
+		height: 35px;
+		width: 35px;
 		top: 4vw;
 		right: 4vw;
 	}
@@ -510,42 +520,43 @@
 		left: 42.5vw;
 	}
 	.exchangeCampu{
+		background-color: white;
 		position: fixed;
+		display: flex;
+		flex-direction: column;
 		opacity: 0.9 ;
 		top: 15vw;
 		right: 4vw;
-		width: 30px;
-		height: 120px;
+		width: 35px;
+		height: 150px;
 		border-radius: 100px;
 		
 	}
 	.campuButton1{
-		position: relative;
-		background-color: white;
 		border-radius: 100px;
 		writing-mode:tb;
 		text-align: center;
-		line-height: 30px;
-		font-size: 18px;
+		line-height: 25px;
+		font-size: 15px;
 		z-index: 2;
-		top: 0;
-		left: 0;
-		width: 30px;
-		height: 85px;
+		margin-top: 5px;
+		margin-left: 5px;
+		width: 25px;
+		height: 70px;
 	}
 	.campuButton2{
-		position: relative;
-		background-color: #E9EAE4;
 		border-radius: 100px;
 		writing-mode:tb;
 		text-align: center;
-		line-height: 30px;
-		font-size: 18px;
+		line-height: 25px;
+		font-size: 15px;
 		z-index: 1;
 		top: -55px;
-		left: 0;
-		width: 30px;
-		height: 85px;
+		margin-top: 5px;
+		margin-left: 5px;
+		margin-bottom: 5px;
+		width: 25px;
+		height: 70px;
 	}
 	.selectCampu{
 		background-image: url("../assets/select/Background.png");
@@ -572,5 +583,19 @@
 		height: auto;
 		left: 0;
 		top: 12vh
+	}
+	.instruct_back{
+		background-image: url('../assets/Loading/background.png');
+		background-size:100% 100%;
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+	}
+	.instruct{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
 	}
 </style>

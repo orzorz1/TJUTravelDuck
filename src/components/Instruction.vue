@@ -49,7 +49,8 @@
 </script>
 <style scoped>
     .main {
-        background-color: white;
+        background-image: url("../assets/Loading/background.png");
+        background-size: 100% 100%;
         width: 100vw;
         height: 100vh;
     }
