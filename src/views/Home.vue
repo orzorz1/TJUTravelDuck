@@ -118,9 +118,9 @@
 			}
 		},
 
-		beforeMount() {
-			this.preload()
+		async beforeMount() {
 			this.$store.commit('disableBtn')
+			await this.preload()
 			let that = this
 			let timerRun = 0
 			let timer = setInterval(function(){
@@ -168,7 +168,7 @@
 							setTimeout(()=>{that.showSelect = true},500)
 						},800)
 				}
-			},500)
+			},500)		
 		},
 
 		methods: {
@@ -194,13 +194,29 @@
 					require('../assets/Instruction/3.png'),
 					require('../assets/Instruction/4.png'),
 					require('../assets/Instruction/5.png'),
+					require('../assets/map/new/32.png'),
+					require('../assets/map/new/1895.png'),
+					require('../assets/map/new/datong.png'),
+					require('../assets/map/new/lake.png'),
+					require('../assets/map/new/library.png'),
+					require('../assets/map/new/ssqs.png'),
+					require('../assets/map/new/twt.png'),
+					require('../assets/map/old/daHuo.png'),
+					require('../assets/map/old/dedicationLake.png'),
+					require('../assets/map/old/feng.png'),
+					require('../assets/map/old/friendshipLake.png'),
+					require('../assets/map/old/loveNightLake.png'),
+					require('../assets/map/old/nine.png'),
+					require('../assets/map/old/ting.png'),
+					require('../assets/map/old/twt.png'),
+					require('../assets/map/old/youthLake.png'),
 				]
 				for (let img of imgs) {
 					let image = new Image();
 					image.src = img;
 					image.onload = () => {
 						count++;
-						if (count == 2) {
+						if (count == imgs.length) {
 							setTimeout(()=>{
 								this.loading = false
 							}, 1000)
@@ -276,13 +292,17 @@
 				if(!this.nowCampu){
 					//新校区
 					//判断在经纬度范围内
-					if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
+					// if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
+					if(1){
 						this.$refs.MapNew.duckState = 1
 						this.$refs.MapNew.getedCard[i] = 1
 						this.$refs.MapNew.duckMove(i)
 						setTimeout(()=>{
 							if(!this.got){
 								this.$refs.MapNew.newCards[i].show = true
+							}else{
+								this.$refs.MapNew.newCards[i].show = true
+								this.$refs.MapNew.newCards[i].show = false
 							}
 						},2200)
 						//获得卡片请求
@@ -298,17 +318,15 @@
 						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 						xhr.send("cardId="+id);
 						xhr.onloadend = function(e){
-							that.$store.commit('ableBtn')
 							if(e.target.status===200){
 								var json = JSON.parse(e.target.response)
 								let count = 0
 								for(let k=0;k<that.$refs.MapNew.getedCard.length;k++){
-									console.log(that.$refs.MapNew.getedCard.length)
 									if(that.$refs.MapNew.getedCard[k]===1){count++}
 								}
 								if(that.$refs.MapNew.getedCard.length===count){
-									that.got = true
-									this.$store.commit('disableBtn')
+									that.$store.commit('disableBtn')
+									setTimeout(()=>{that.got = true},2000)
 								}
 							}
 						}
@@ -344,9 +362,9 @@
 								for(let k=0;k<that.$refs.MapOld.getedCard.length;k++){
 									if(that.$refs.MapOld.getedCard===1){count++}
 								}
+								this.$store.commit('disableBtn')
 								if(that.$refs.MapOld.getedCard.length===count){
 									that.got = true
-									this.$store.commit('disableBtn')
 								}
 							}
 						}

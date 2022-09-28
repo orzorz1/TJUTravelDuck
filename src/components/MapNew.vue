@@ -10,7 +10,7 @@
             <img class="ssqs" src="../assets/map/new/ssqs.png"  :style="{'opacity' :getedCard[0] ? '' :'0'}" @click="showCard(0)">
             <img class="datong" src="../assets/map/new/datong.png"  :style="{'opacity' :getedCard[5] ? '' :'0'}" @click="showCard(5)">
             <img class="twt" src="../assets/map/new/twt.png">
-            <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===1 ? 'display:none;' : '' " ref="duck">
+            <img class="duck" :src="duckState===0 ? require('../assets/map/duck_awaiting.png') : require('../assets/map/duck_now.png')" :style="campu===1 ? 'display:none;' : '' " ref="duck" v-if="duckState!=2">
         </div>
         <transition  name="fade" mode="out-in">
             <div class="Cards" v-for="(card,index) in newCards" v-if="newCards[index].show">
@@ -49,7 +49,7 @@
                 oldY: -10,
                 oldScale: 0.43,
                 first:0,
-                duckState:0, //鸭子状态: 0为待出发，1为已出发
+                duckState:0, //鸭子状态: 0为待出发，1为已出发, 2为不显示
                 newCards: [
                     { "name": "1895行政楼和实事求是石", "show": false, "url": require("../assets/cards/1895.png") },
                     { "name": "32教", "show": false, "url": require("../assets/cards/32.png") },
@@ -93,6 +93,13 @@
                             }else if(json.result[k] && json.result[k].id===26){
                                 that.getedCard[5]=1
                             }
+                        }
+                        let c = 0
+                        for(let j=0;j<that.getedCard.length;j++){
+                            if(that.getedCard[j]===1){c++}
+                        }
+                        if(c===that.getedCard.length){
+                            that.duckState=2
                         }
                         that.newCards[0].show = true
                         that.newCards[0].show = false
