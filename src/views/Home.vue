@@ -292,8 +292,7 @@
 				if(!this.nowCampu){
 					//新校区
 					//判断在经纬度范围内
-					// if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
-					if(1){
+					if(lat > this.positionNew[i].position[0] && lat < this.positionNew[i].position[1] && lng > this.positionNew[i].position[2] && lng < this.positionNew[i].position[3]){
 						this.$refs.MapNew.duckState = 1
 						this.$refs.MapNew.getedCard[i] = 1
 						this.$refs.MapNew.duckMove(i)
@@ -341,6 +340,9 @@
 						setTimeout(()=>{
 							if(!this.got){
 								this.$refs.MapOld.oldCards[i].show = true
+							}else{
+								this.$refs.MapOld.oldCards[i].show = true
+								this.$refs.MapOld.oldCards[i].show = false
 							}
 						},2200)
 						//获得卡片请求
@@ -349,22 +351,21 @@
 						else if(i===1){id=12}
 						else if(i===2){id=13}
 						else if(i===3){id=14}
-						else if(i===4){dfeid=15}
+						else if(i===4){id=15}
 						var xhr = new XMLHttpRequest();
 						xhr.open('POST',that.apiUrl+'/api/v1/card/user?token='+that.token);
 						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 						xhr.send("cardId="+id);
 						xhr.onloadend = function(e){
-							that.$store.commit('ableBtn')
 							if(e.target.status===200){
 								var json = JSON.parse(e.target.response)
 								let count = 0
 								for(let k=0;k<that.$refs.MapOld.getedCard.length;k++){
-									if(that.$refs.MapOld.getedCard===1){count++}
+									if(that.$refs.MapOld.getedCard[k]===1){count++}
 								}
-								this.$store.commit('disableBtn')
 								if(that.$refs.MapOld.getedCard.length===count){
-									that.got = true
+									that.$store.commit('disableBtn')
+									setTimeout(()=>{that.got = true},2000)
 								}
 							}
 						}
