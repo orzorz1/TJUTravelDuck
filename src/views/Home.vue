@@ -147,9 +147,11 @@
 								if(json.result === "卫津路校区"){
 									that.nowCampu = 1
 									that.$store.commit('setCampu', 1)
-								}else{
+								}else if(json.result === "北洋园校区"){
 									that.nowCampu = 0
 									that.$store.commit('setCampu', 0)
+								}else{
+									that.showSelect = true
 								}
 							}
 						}
@@ -409,8 +411,24 @@
 				this.showSelect = false
 				this.nowCampu = c
 				this.$store.commit('setCampu', c)
-				this.$store.commit('ableBtn')
-			}
+				let cam = 0
+				if(c===0){
+					cam = 2
+				}else if(c===1){
+					cam = 1
+				}
+				let that = this
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST',that.apiUrl+'/api/v1/school?token='+that.token);
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+				xhr.send("school="+cam);
+				xhr.onloadend = function(e){
+					this.$store.commit('ableBtn')
+					if(e.target.status===200){
+						var json = JSON.parse(e.target.response)
+					}
+				}
+f			}
 		}
 	}
 </script>

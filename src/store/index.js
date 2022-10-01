@@ -9,7 +9,8 @@ export default new Vuex.Store({
 		token: '',
 		campu: -1,  //校区：0新、1老
 		disableButton: false,
-		apiUrl: "http://101.43.148.116:8081"
+		// apiUrl: "http://101.43.148.116:8081" （测试）
+		apiUrl: "https://letter.twt.edu.cn"
 	},
 	mutations: {
 		disableBtn() {
