@@ -107,14 +107,11 @@
 							{"name":"青年湖", "position":[38.9954156, 38.9991765, 117.3070682, 117.31048], "index":3},
 							{"name":"郑东图书馆", "position":[38.996375, 38.998226, 117.31314, 117.315115], "index":4},
 							{"name":"大通学生中心", "position":[38.9954156, 38.998026, 117.31048, 117.3118532], "index":5},],
-				positionOld:[{"name":"冯骥才艺术研究院", "position":[39.111284, 39.112, 117.1745786, 117.175453], "index":0},
-							{"name":"大学生活动中心", "position":[39.1119, 39.1126, 117.17085, 117.17187], "index":3},
-							{"name":"北洋纪念亭", "position":[39.1077923, 39.10846, 117.175438, 117.176103], "index":1},
-							{"name":"友谊湖", "position":[39.10609, 39.10828, 117.168164, 117.169827], "index":2},
-							{"name":"敬业湖", "position":[39.1077, 39.108675, 117.1702677, 117.1743], "index":2},
-							{"name":"爱晚湖", "position":[39.10828, 39.109728, 117.168164, 117.16986], "index":2},
-							{"name":"青年湖", "position":[39.11082, 39.11305, 117.1707, 117.1745786], "index":2},
-							{"name":"第九教学楼", "position":[39.1087541, 39.10952, 117.174337, 117.17543134], "index":4}],
+				positionOld:[{"name":"冯骥才艺术研究院", "position":[[39.111284, 39.112, 117.1745786, 117.175453]], "index":0},
+							{"name":"北洋纪念亭", "position":[[39.1077923, 39.10846, 117.175438, 117.176103]], "index":1},
+							{"name":"四大湖", "position":[[39.10609, 39.10828, 117.168164, 117.169827],[39.1077, 39.108675, 117.1702677, 117.1743],[39.10828, 39.109728, 117.168164, 117.16986],[39.11082, 39.11305, 117.1707, 117.1745786]], "index":2},
+							{"name":"大学生活动中心", "position":[[39.1119, 39.1126, 117.17085, 117.17187]], "index":3},
+							{"name":"第九教学楼", "position":[[39.1087541, 39.10952, 117.174337, 117.17543134]], "index":4}],
 			}
 		},
 
@@ -151,7 +148,7 @@
 									that.nowCampu = 0
 									that.$store.commit('setCampu', 0)
 								}else{
-									that.showSelect = true
+									setTimeout(()=>{that.showSelect = true},2000)
 								}
 							}
 						}
@@ -270,7 +267,7 @@
 							// data是具体的定位信息
 							that.longit = data.position.lng
 							that.latit = data.position.lat
-							// alert(data.accuracy)
+							// alert(that.longit+"  "+that.latit)
 							that.positioning = false
 							that.checkPosition(that.latit, that.longit, index)
 							// that.checkPosition(38.9976491, 117.3084621, index)
@@ -335,45 +332,46 @@
 					}
 					
 				}else{
-					if(lat > this.positionOld[i].position[0] && lat < this.positionOld[i].position[1] && lng > this.positionOld[i].position[2] && lng < this.positionOld[i].position[3]){
-						this.$refs.MapOld.duckState = 1
-						this.$refs.MapOld.getedCard[i] = 1
-						this.$refs.MapOld.duckMove(i)
-						setTimeout(()=>{
-							if(!this.got){
-								this.$refs.MapOld.oldCards[i].show = true
-							}else{
-								this.$refs.MapOld.oldCards[i].show = true
-								this.$refs.MapOld.oldCards[i].show = false
-							}
-						},2200)
-						//获得卡片请求
-						let id = 0
-						if(i===0){id=11}
-						else if(i===1){id=12}
-						else if(i===2){id=13}
-						else if(i===3){id=14}
-						else if(i===4){id=15}
-						var xhr = new XMLHttpRequest();
-						xhr.open('POST',that.apiUrl+'/api/v1/card/user?token='+that.token);
-						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-						xhr.send("cardId="+id);
-						xhr.onloadend = function(e){
-							if(e.target.status===200){
-								var json = JSON.parse(e.target.response)
-								let count = 0
-								for(let k=0;k<that.$refs.MapOld.getedCard.length;k++){
-									if(that.$refs.MapOld.getedCard[k]===1){count++}
+					for(let j=0; j<this.positionOld[i].position.length; j++){
+						if(lat > this.positionOld[i].position[j][0] && lat < this.positionOld[i].position[j][1] && lng > this.positionOld[i].position[j][2] && lng < this.positionOld[i].position[j][3]){
+							this.$refs.MapOld.duckState = 1
+							this.$refs.MapOld.getedCard[i] = 1
+							this.$refs.MapOld.duckMove(i)
+							setTimeout(()=>{
+								if(!this.got){
+									this.$refs.MapOld.oldCards[i].show = true
+								}else{
+									this.$refs.MapOld.oldCards[i].show = true
+									this.$refs.MapOld.oldCards[i].show = false
 								}
-								if(that.$refs.MapOld.getedCard.length===count){
-									that.$store.commit('disableBtn')
-									setTimeout(()=>{that.got = true},2000)
+							},2200)
+							//获得卡片请求
+							let id = 0
+							if(i===0){id=11}
+							else if(i===1){id=12}
+							else if(i===2){id=13}
+							else if(i===3){id=14}
+							else if(i===4){id=15}
+							var xhr = new XMLHttpRequest();
+							xhr.open('POST',that.apiUrl+'/api/v1/card/user?token='+that.token);
+							xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+							xhr.send("cardId="+id);
+							xhr.onloadend = function(e){
+								if(e.target.status===200){
+									var json = JSON.parse(e.target.response)
+									let count = 0
+									for(let k=0;k<that.$refs.MapOld.getedCard.length;k++){
+										if(that.$refs.MapOld.getedCard[k]===1){count++}
+									}
+									if(that.$refs.MapOld.getedCard.length===count){
+										that.$store.commit('disableBtn')
+										setTimeout(()=>{that.got = true},2000)
+									}
 								}
 							}
+							flag = 1
 						}
-						flag = 1
 					}
-					
 				}
 				if(flag == 0){
 					this.positionError = true
@@ -418,6 +416,7 @@
 					cam = 1
 				}
 				let that = this
+				that.instruct = true
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST',that.apiUrl+'/api/v1/school?token='+that.token);
 				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -614,7 +613,7 @@ f			}
 	}
 	.btnNew{
 		position: absolute;
-		z-index: 1000;
+		z-index: 1;
 		width: 60vw;
 		height: auto;
 		left: 0;
@@ -622,7 +621,7 @@ f			}
 	}
 	.btnOld{
 		position: absolute;
-		z-index: 1000;
+		z-index: 1;
 		width: 60vw;
 		height: auto;
 		left: 0;
