@@ -16,7 +16,7 @@ new Vue({
 // 初始化vue-amap
 VueAMap.initAMapApiLoader({
 	// 高德的key
-	key: '18f1b9d3ca3579707e34e2d1874bc731',
+	key: '26c1fbd756501d8d89faf97a4e47401a',
 	// 插件集合
 	plugin: [
 		'AMap.CircleEditor',// 圆形编辑器插件
@@ -31,5 +31,5 @@ VueAMap.initAMapApiLoader({
 });
 //高德的安全密钥
 window._AMapSecurityConfig = {
-	securityJsCode: '98c6989c8633377c2663fe1d4ed7fb34',
+	securityJsCode: 'd026670df8d52b48539c4cbcf0c0e0f3',
 }
